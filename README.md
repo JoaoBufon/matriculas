@@ -6,7 +6,7 @@ Este projeto é uma aplicação desenvolvida para gerenciar informações sobre 
 
 - **Frontend**: React.js
 - **Backend**: Spring Boot
-- **Banco de Dados**: (Especificar o banco utilizado, caso aplicável)
+- **Banco de Dados**: Postgress
 - **Ferramentas de Build**: Maven
 
 ## Instalação
