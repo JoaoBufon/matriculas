@@ -9,8 +9,11 @@ import java.util.Objects;
 public class Estado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_estado")
     private Long idEstado;
+    @Column(name = "des_estado")
     private String desEstado;
+    @Column(name = "sigla")
     private String sigla;
 
     public Estado(Long idEstado, String desEstado, String sigla) {
