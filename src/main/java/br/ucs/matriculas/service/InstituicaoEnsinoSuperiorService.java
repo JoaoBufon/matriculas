@@ -3,10 +3,12 @@ package br.ucs.matriculas.service;
 import br.ucs.matriculas.entity.InstituicaoEnsinoSuperior;
 import br.ucs.matriculas.repository.InstituicaoEnsinoSuperiorRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class InstituicaoEnsinoSuperiorService {
     private final InstituicaoEnsinoSuperiorRepository instituicaoEnsinoSuperiorRepository;
 
