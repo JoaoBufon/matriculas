@@ -28,6 +28,10 @@ public class InstituicaoEnsinoSuperiorService {
         return instituicaoEnsinoSuperiorRepository.save(instituicaoEnsinoSuperior);
     }
 
+    public List<InstituicaoEnsinoSuperior> saveAllInBatch(List<InstituicaoEnsinoSuperior> instituicaoEnsinoSuperiors) {
+        return instituicaoEnsinoSuperiorRepository.saveAll(instituicaoEnsinoSuperiors);
+    }
+
     public ResponseEntity<Void> delete(Long idInstituicaoEnsinoSuperior) {
         this.instituicaoEnsinoSuperiorRepository.deleteById(idInstituicaoEnsinoSuperior);
         return ResponseEntity.noContent().build();

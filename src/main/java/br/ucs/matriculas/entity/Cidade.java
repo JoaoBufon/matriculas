@@ -5,18 +5,22 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "cidade")
+@Table(name = "cidade",
+        uniqueConstraints =
+        @UniqueConstraint(
+                columnNames = {"des_cidade", "id_estado"}
+        ))
 public class Cidade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cidade")
+    @Column(name = "id_cidade", nullable = false)
     private Long idCidade;
 
-    @Column(name = "des_cidade")
+    @Column(name = "des_cidade", nullable = false)
     private String desCidade;
 
     @ManyToOne
-    @JoinColumn(name = "id_estado")
+    @JoinColumn(name = "id_estado", nullable = false)
     private Estado estado;
 
     public Cidade(Long idCidade, String desCidade, Estado estado) {
@@ -26,6 +30,11 @@ public class Cidade {
     }
 
     public Cidade() {
+    }
+
+    public Cidade(String desCidade, Estado estado) {
+        this.desCidade = desCidade;
+        this.estado = estado;
     }
 
     public Long getIdCidade() {

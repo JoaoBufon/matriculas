@@ -9,15 +9,15 @@ import java.util.Objects;
 public class MatriculasAnosCursos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_matriculas_anos_cursos")
+    @Column(name = "id_matriculas_anos_cursos", nullable = false)
     private Long idMatriculasAnosCursos;
 
     @ManyToOne
-    @JoinColumn(name = "id_curso_ies")
+    @JoinColumn(name = "id_curso_ies", nullable = false)
     private CursoIES cursoIES;
 
-    @Column(name = "ano")
-    private String ano;
+    @Column(name = "ano", nullable = false)
+    private Integer ano;
 
     @Column(name = "quantidade")
     private Integer quantidade;
@@ -25,7 +25,7 @@ public class MatriculasAnosCursos {
     public MatriculasAnosCursos() {
     }
 
-    public MatriculasAnosCursos(CursoIES cursoIES, String ano, Integer quantidade) {
+    public MatriculasAnosCursos(CursoIES cursoIES, Integer ano, Integer quantidade) {
         this.cursoIES = cursoIES;
         this.ano = ano;
         this.quantidade = quantidade;
@@ -47,11 +47,11 @@ public class MatriculasAnosCursos {
         this.cursoIES = cursoIES;
     }
 
-    public String getAno() {
+    public Integer getAno() {
         return ano;
     }
 
-    public void setAno(String ano) {
+    public void setAno(Integer ano) {
         this.ano = ano;
     }
 

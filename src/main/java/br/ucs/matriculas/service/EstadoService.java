@@ -28,6 +28,9 @@ public class EstadoService {
         return estadoRepository.save(estado);
     }
 
+    public List<Estado> saveAllInBatch(List<Estado> listEstados) {
+        return estadoRepository.saveAllAndFlush(listEstados);
+    }
     public ResponseEntity<Void> delete(Long idEstado) {
         this.estadoRepository.deleteById(idEstado);
         return ResponseEntity.noContent().build();

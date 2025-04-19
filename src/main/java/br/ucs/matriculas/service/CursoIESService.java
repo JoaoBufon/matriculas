@@ -28,6 +28,10 @@ public class CursoIESService {
         return this.cursoIESRepository.save(cursoIES);
     }
 
+    public List<CursoIES> saveAllInBatch(List<CursoIES> listCursos){
+        return cursoIESRepository.saveAllAndFlush(listCursos);
+    }
+
     public ResponseEntity<Void> delete(Long idCursoIES) {
         this.cursoIESRepository.deleteById(idCursoIES);
         return ResponseEntity.noContent().build();

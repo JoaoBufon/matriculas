@@ -28,6 +28,10 @@ public class MatriculasAnosCursosService {
         return this.matriculasAnosCursosRepository.save(matriculasAnosCursos);
     }
 
+    public List<MatriculasAnosCursos> saveAllInBatch(List<MatriculasAnosCursos> listMatriculasAnosCursos){
+        return matriculasAnosCursosRepository.saveAllAndFlush(listMatriculasAnosCursos);
+    }
+
     public ResponseEntity<Void> delete(Long idMatriculasAnosCursos) {
         this.matriculasAnosCursosRepository.deleteById(idMatriculasAnosCursos);
         return ResponseEntity.noContent().build();

@@ -29,6 +29,9 @@ public class CidadeService {
         return this.cidadeRepository.save(cidade);
     }
 
+    public List<Cidade> saveAllInBatch(List<Cidade> listCidades) {
+        return cidadeRepository.saveAllAndFlush(listCidades);
+    }
     public ResponseEntity<Void> delete(Long idCidade) {
         this.cidadeRepository.deleteById(idCidade);
         return ResponseEntity.noContent().build();

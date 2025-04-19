@@ -29,6 +29,10 @@ public class CursoService {
         return this.cursoRepository.save(curso);
     }
 
+    public List<Curso> saveAllInBatch(List<Curso> listCursos) {
+        return cursoRepository.saveAllAndFlush(listCursos);
+    }
+
     public ResponseEntity<Void> delete(Long idCurso) {
         this.cursoRepository.deleteById(idCurso);
         return ResponseEntity.noContent().build();

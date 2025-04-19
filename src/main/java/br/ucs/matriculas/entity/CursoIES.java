@@ -1,76 +1,1 @@
-package br.ucs.matriculas.entity;
-
-import jakarta.persistence.*;
-
-import java.util.Objects;
-
-@Entity
-@Table
-public class CursoIES {
-    @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cursoIES")
-    private Long idCursoIES;
-
-    @ManyToOne
-    @JoinColumn(name = "id_ies")
-    private InstituicaoEnsinoSuperior idIES;
-
-    @ManyToOne
-    @JoinColumn(name = "id_curso")
-    private Curso idCurso;
-
-    public CursoIES() {
-    }
-
-    public CursoIES(Curso idCurso, InstituicaoEnsinoSuperior idIES, Long idCursoIES) {
-        this.idCurso = idCurso;
-        this.idIES = idIES;
-        this.idCursoIES = idCursoIES;
-    }
-
-    public Long getIdCursoIES() {
-        return idCursoIES;
-    }
-
-    public void setIdCursoIES(Long idCursoIES) {
-        this.idCursoIES = idCursoIES;
-    }
-
-    public InstituicaoEnsinoSuperior getIdIES() {
-        return idIES;
-    }
-
-    public void setIdIES(InstituicaoEnsinoSuperior idIES) {
-        this.idIES = idIES;
-    }
-
-    public Curso getIdCurso() {
-        return idCurso;
-    }
-
-    public void setIdCurso(Curso idCurso) {
-        this.idCurso = idCurso;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        CursoIES cursoIES = (CursoIES) o;
-        return Objects.equals(idCursoIES, cursoIES.idCursoIES) && Objects.equals(idIES, cursoIES.idIES) && Objects.equals(idCurso, cursoIES.idCurso);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idCursoIES, idIES, idCurso);
-    }
-
-    @Override
-    public String toString() {
-        return "CursoIES{" +
-                "idCursoIES=" + idCursoIES +
-                ", idIES=" + idIES +
-                ", idCurso=" + idCurso +
-                '}';
-    }
-}
+package br.ucs.matriculas.entity;import jakarta.persistence.*;import java.util.Objects;@Entity@Table(name = "curso_ies",        uniqueConstraints =        @UniqueConstraint(                columnNames = {"id_ies", "id_curso", "modalidade"}        ))public class CursoIES {    @Id    @GeneratedValue(strategy = GenerationType.IDENTITY)    @Column(name = "id_cursoIES", nullable = false)    private Long idCursoIES;    @ManyToOne    @JoinColumn(name = "id_ies", nullable = false)    private InstituicaoEnsinoSuperior idIES;    @ManyToOne    @JoinColumn(name = "id_curso", nullable = false)    private Curso idCurso;    @Column(name = "modalidade")    private String modalidade;    public CursoIES() {    }    public CursoIES(Curso idCurso, InstituicaoEnsinoSuperior idIES, Long idCursoIES, String modalidade) {        this.idCurso = idCurso;        this.idIES = idIES;        this.idCursoIES = idCursoIES;        this.modalidade = modalidade;    }    public CursoIES(Curso idCurso, InstituicaoEnsinoSuperior idIES, String modalidade) {        this.idCurso = idCurso;        this.idIES = idIES;        this.idCursoIES = idCursoIES;        this.modalidade = modalidade;    }    public Long getIdCursoIES() {        return idCursoIES;    }    public void setIdCursoIES(Long idCursoIES) {        this.idCursoIES = idCursoIES;    }    public InstituicaoEnsinoSuperior getIdIES() {        return idIES;    }    public void setIdIES(InstituicaoEnsinoSuperior idIES) {        this.idIES = idIES;    }    public Curso getIdCurso() {        return idCurso;    }    public void setIdCurso(Curso idCurso) {        this.idCurso = idCurso;    }    public String getModalidade() {        return modalidade;    }    public void setModalidade(String modalidade) {        this.modalidade = modalidade;    }    @Override    public boolean equals(Object o) {        if (o == null || getClass() != o.getClass()) return false;        CursoIES cursoIES = (CursoIES) o;        return Objects.equals(idCursoIES, cursoIES.idCursoIES) && Objects.equals(idIES, cursoIES.idIES) && Objects.equals(idCurso, cursoIES.idCurso) && Objects.equals(modalidade, cursoIES.modalidade);    }    @Override    public int hashCode() {        return Objects.hash(idCursoIES, idIES, idCurso, modalidade);    }    @Override    public String toString() {        return "CursoIES{" +                "idCursoIES=" + idCursoIES +                ", idIES=" + idIES +                ", idCurso=" + idCurso +                ", modalidade='" + modalidade + '\'' +                '}';    }}

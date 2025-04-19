@@ -5,24 +5,29 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "estado")
+@Table(name = "estado",
+        uniqueConstraints =
+        @UniqueConstraint(
+                columnNames = {"des_estado"}
+        ))
 public class Estado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_estado")
+    @Column(name = "id_estado", nullable = false)
     private Long idEstado;
-    @Column(name = "des_estado")
+    @Column(name = "des_estado", nullable = false)
     private String desEstado;
-    @Column(name = "sigla")
-    private String sigla;
 
-    public Estado(Long idEstado, String desEstado, String sigla) {
+    public Estado(Long idEstado, String desEstado) {
         this.idEstado = idEstado;
         this.desEstado = desEstado;
-        this.sigla = sigla;
     }
 
     public Estado() {
+    }
+
+    public Estado(String desEstado) {
+        this.desEstado = desEstado;
     }
 
     public Long getIdEstado() {
@@ -31,14 +36,6 @@ public class Estado {
 
     public void setIdEstado(Long id) {
         this.idEstado = id;
-    }
-
-    public String getSigla() {
-        return sigla;
-    }
-
-    public void setSigla(String sigla) {
-        this.sigla = sigla;
     }
 
     public String getDesEstado() {
@@ -54,7 +51,6 @@ public class Estado {
         return "Estado{" +
                 "idEstado=" + idEstado +
                 ", desEstado='" + desEstado + '\'' +
-                ", sigla='" + sigla + '\'' +
                 '}';
     }
 
@@ -62,11 +58,11 @@ public class Estado {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Estado estado = (Estado) o;
-        return Objects.equals(idEstado, estado.idEstado) && Objects.equals(desEstado, estado.desEstado) && Objects.equals(sigla, estado.sigla);
+        return Objects.equals(idEstado, estado.idEstado) && Objects.equals(desEstado, estado.desEstado);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idEstado, desEstado, sigla);
+        return Objects.hash(idEstado, desEstado);
     }
 }

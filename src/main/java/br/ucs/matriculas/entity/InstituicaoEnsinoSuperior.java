@@ -5,14 +5,18 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "instituicao_ensino_superior")
+@Table(name = "instituicao_ensino_superior",
+        uniqueConstraints =
+        @UniqueConstraint(
+                columnNames = {"des_ies", "sigla_ies", "organizacao", "categoria_administrativa"}
+        ))
 public class InstituicaoEnsinoSuperior {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_ies")
+    @Column(name = "id_ies", nullable = false)
     private Long idIES;
 
-    @Column(name = "des_ies")
+    @Column(name = "des_ies", nullable = false)
     private String desIES;
 
     @Column(name = "sigla_ies")
@@ -24,17 +28,20 @@ public class InstituicaoEnsinoSuperior {
     @Column(name = "categoria_administrativa")
     private String categoriaAdministrativa;
 
-    @ManyToOne
-    @JoinColumn(name = "id_cidade")
-    private Cidade cidade;
-
-    public InstituicaoEnsinoSuperior(Long idIES, String desIES, String siglaIES, String organizacao, String categoriaAdministrativa, Cidade cidade) {
+    public InstituicaoEnsinoSuperior(Long idIES, String desIES, String siglaIES, String organizacao, String categoriaAdministrativa) {
         this.idIES = idIES;
         this.desIES = desIES;
         this.siglaIES = siglaIES;
         this.organizacao = organizacao;
         this.categoriaAdministrativa = categoriaAdministrativa;
-        this.cidade = cidade;
+    }
+
+    public InstituicaoEnsinoSuperior(String desIES, String siglaIES, String organizacao, String categoriaAdministrativa) {
+        this.idIES = idIES;
+        this.desIES = desIES;
+        this.siglaIES = siglaIES;
+        this.organizacao = organizacao;
+        this.categoriaAdministrativa = categoriaAdministrativa;
     }
 
     public InstituicaoEnsinoSuperior() {
@@ -80,24 +87,16 @@ public class InstituicaoEnsinoSuperior {
         this.categoriaAdministrativa = categoriaAdministrativa;
     }
 
-    public Cidade getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(Cidade cidade) {
-        this.cidade = cidade;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         InstituicaoEnsinoSuperior that = (InstituicaoEnsinoSuperior) o;
-        return Objects.equals(idIES, that.idIES) && Objects.equals(desIES, that.desIES) && Objects.equals(siglaIES, that.siglaIES) && Objects.equals(organizacao, that.organizacao) && Objects.equals(categoriaAdministrativa, that.categoriaAdministrativa) && Objects.equals(cidade, that.cidade);
+        return Objects.equals(idIES, that.idIES) && Objects.equals(desIES, that.desIES) && Objects.equals(siglaIES, that.siglaIES) && Objects.equals(organizacao, that.organizacao) && Objects.equals(categoriaAdministrativa, that.categoriaAdministrativa);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idIES, desIES, siglaIES, organizacao, categoriaAdministrativa, cidade);
+        return Objects.hash(idIES, desIES, siglaIES, organizacao, categoriaAdministrativa);
     }
 
     @Override
@@ -108,7 +107,6 @@ public class InstituicaoEnsinoSuperior {
                 ", siglaIES='" + siglaIES + '\'' +
                 ", organizacao='" + organizacao + '\'' +
                 ", categoriaAdministrativa='" + categoriaAdministrativa + '\'' +
-                ", cidade=" + cidade +
                 '}';
     }
 }
