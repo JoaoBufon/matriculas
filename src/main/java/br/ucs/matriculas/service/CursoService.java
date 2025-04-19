@@ -30,7 +30,7 @@ public class CursoService {
     }
 
     public List<Curso> saveAllInBatch(List<Curso> listCursos) {
-        return cursoRepository.saveAllAndFlush(listCursos);
+        return cursoRepository.saveAll(listCursos);
     }
 
     public ResponseEntity<Void> delete(Long idCurso) {

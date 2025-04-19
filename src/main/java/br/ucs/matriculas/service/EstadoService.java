@@ -29,7 +29,7 @@ public class EstadoService {
     }
 
     public List<Estado> saveAllInBatch(List<Estado> listEstados) {
-        return estadoRepository.saveAllAndFlush(listEstados);
+        return estadoRepository.saveAll(listEstados);
     }
     public ResponseEntity<Void> delete(Long idEstado) {
         this.estadoRepository.deleteById(idEstado);

@@ -32,6 +32,6 @@ public class CampusService {
     }
 
     public List<Campus> saveAllCampusesInBatch(List<Campus> listCampus) {
-        return campusRepository.saveAllAndFlush(listCampus);
+        return campusRepository.saveAll(listCampus);
     }
 }

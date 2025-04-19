@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/matriculasAnosCursos")
+@Deprecated
 public class MatriculasAnosCursosController {
     private final MatriculasAnosCursosService matriculasAnosCursosService;
 

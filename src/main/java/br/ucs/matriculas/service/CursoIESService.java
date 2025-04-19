@@ -29,7 +29,7 @@ public class CursoIESService {
     }
 
     public List<CursoIES> saveAllInBatch(List<CursoIES> listCursos){
-        return cursoIESRepository.saveAllAndFlush(listCursos);
+        return cursoIESRepository.saveAll(listCursos);
     }
 
     public ResponseEntity<Void> delete(Long idCursoIES) {

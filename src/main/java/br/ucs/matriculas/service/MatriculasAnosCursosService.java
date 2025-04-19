@@ -5,10 +5,13 @@ import br.ucs.matriculas.repository.MatriculasAnosCursosRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@Deprecated
 public class MatriculasAnosCursosService {
     private final MatriculasAnosCursosRepository matriculasAnosCursosRepository;
 

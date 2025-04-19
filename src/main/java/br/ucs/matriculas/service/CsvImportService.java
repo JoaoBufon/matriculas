@@ -7,12 +7,10 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class CsvImportService {
@@ -39,14 +37,74 @@ public class CsvImportService {
     public void importarCsv(String caminhoCsv, boolean possuiCabecalho, String separador) {
         List<CamposCsvDTO> listCsv = this.leituraCsv(caminhoCsv, possuiCabecalho, separador);
 
-        List<Estado> listEstados = estadoService.saveAllInBatch(listCsv.stream().map(CamposCsvDTO::getDesEstado).distinct().map(Estado::new).toList());
+        List<Estado> listEstados = this.saveEstados(listCsv);
 
-        List<Cidade> listCidades = cidadeService.saveAllInBatch(listCsv.stream().map(dto -> new Cidade(
-                dto.getDesCidade(),
-                listEstados.stream().filter(estado -> Objects.equals(estado.getDesEstado(), dto.getDesEstado())).findFirst().orElse(null)
+        List<Cidade> listCidades = this.saveCidades(listCsv, listEstados);
+
+        List<InstituicaoEnsinoSuperior> listIES = this.saveIes(listCsv);
+
+        List<Curso> listCursos = this.saveCursos(listCsv);
+
+        List<CursoIES> listCursoIes = this.saveCursosIes(listCsv,listCursos, listIES);
+
+        List<Campus> listCampus = this.saveCampuses(listCsv, listCidades, listIES);
+
+        //List<MatriculasAnosCursos> lstMatriculasAnosCursos = this.saveMatriculasAnosCursos(listCsv, listCursoIes);
+    }
+
+    @Deprecated
+    private List<MatriculasAnosCursos> saveMatriculasAnosCursos(List<CamposCsvDTO> listCsv, List<CursoIES> listCursoIes) {
+        Map<String, CursoIES> mapaCursoIes = listCursoIes.stream()
+                .collect(Collectors.toMap(
+                        ci -> ci.getIdCurso().getDesCurso() + "#" + ci.getIdIES().getDesIES(),
+                        ci -> ci,
+                        (valorAntigo, valorNovo) -> valorAntigo
+                ));
+
+        return this.matriculasAnosCursosService.saveAllInBatch(
+                listCsv.stream().map(dto -> this.createMatriculasAnosCursos(
+                                mapaCursoIes.get(dto.getDesCurso() + "#" + dto.getDesIES()),
+                                new Integer[]{2014, 2015, 2016, 2017, 2018, 2020, 2021, 2022},
+                                new Integer[]{dto.getAno2014(), dto.getAno2015(), dto.getAno2016(), dto.getAno2017(), dto.getAno2018(),
+                                        dto.getAno2019(), dto.getAno2020(), dto.getAno2021(), dto.getAno2022()})).distinct().toList().stream()
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList()));
+    }
+
+    private List<Campus> saveCampuses(List<CamposCsvDTO> listCsv, List<Cidade> listCidades, List<InstituicaoEnsinoSuperior> listIES) {
+        return campusService.saveAllCampusesInBatch(listCsv.stream().map(dto -> new Campus(
+                listCidades.stream().filter(cidade -> Objects.equals(cidade.getDesCidade(), dto.getDesCidade())).findFirst().orElse(null),
+                listIES.stream().filter(ies -> Objects.equals(dto.getDesIES(), ies.getDesIES())).findFirst().orElse(null)
         )).distinct().toList());
+    }
 
-        List<InstituicaoEnsinoSuperior> listIES = instituicaoEnsinoSuperiorService.saveAllInBatch(listCsv.stream()
+    private List<CursoIES> saveCursosIes(List<CamposCsvDTO> listCsv, List<Curso> listCursos, List<InstituicaoEnsinoSuperior> listIES) {
+        return cursoIESService.saveAllInBatch(listCsv.stream().map(dto -> new CursoIES(
+                listCursos.stream().filter(curso -> Objects.equals(dto.getDesCurso(), curso.getDesCurso())).findFirst().orElse(null),
+                listIES.stream().filter(ies -> Objects.equals(dto.getDesIES(), ies.getDesIES())).findFirst().orElse(null),
+                dto.getModalidade(),
+                dto.getAno2014(),
+                dto.getAno2015(),
+                dto.getAno2016(),
+                dto.getAno2017(),
+                dto.getAno2018(),
+                dto.getAno2019(),
+                dto.getAno2020(),
+                dto.getAno2021(),
+                dto.getAno2022()
+        )).distinct().toList());
+    }
+
+    private List<Curso> saveCursos(List<CamposCsvDTO> listCsv) {
+        return cursoService.saveAllInBatch(listCsv.stream().map(dto -> new Curso(
+                dto.getDesCurso(),
+                dto.getDesDetalhadoCurso(),
+                dto.getGrau()
+        )).distinct().toList());
+    }
+
+    private List<InstituicaoEnsinoSuperior> saveIes(List<CamposCsvDTO> listCsv) {
+        return instituicaoEnsinoSuperiorService.saveAllInBatch(listCsv.stream()
                 .map(dto -> new InstituicaoEnsinoSuperior(
                         dto.getDesIES(),
                         dto.getDesSigla(),
@@ -55,29 +113,40 @@ public class CsvImportService {
                 ))
                 .distinct()
                 .toList());
-
-        List<Curso> listCursos = cursoService.saveAllInBatch(listCsv.stream().map(dto -> new Curso(
-                dto.getDesCurso(),
-                dto.getDesDetalhadoCurso(),
-                dto.getGrau()
-        )).distinct().toList());
-
-        List<CursoIES> listCursoIes = cursoIESService.saveAllInBatch(listCsv.stream().map(dto -> new CursoIES(
-                listCursos.stream().filter(curso -> Objects.equals(dto.getDesCurso(), curso.getDesCurso())).findFirst().orElse(null),
-                listIES.stream().filter(ies -> Objects.equals(dto.getDesIES(), ies.getDesIES())).findFirst().orElse(null),
-                dto.getModalidade()
-
-        )).distinct().toList());
-
-        List<Campus> listCampus = campusService.saveAllCampusesInBatch(listCsv.stream().map(dto -> new Campus(
-                listCidades.stream().filter(cidade -> Objects.equals(cidade.getDesCidade(), dto.getDesCidade())).findFirst().orElse(null),
-                listIES.stream().filter(ies -> Objects.equals(dto.getDesIES(), ies.getDesIES())).findFirst().orElse(null)
-        )).distinct().toList());
-
-        /*List<MatriculasAnosCursos> listMatriculasAnosCursos = matriculasAnosCursosService.saveAllInBatch(listCsv.stream().map(dto -> new MatriculasAnosCursosService(
-                listCursoIes.stream().filter(cursoIes -> Objects.equals(cursoI))
-        )));*/
     }
+
+    private List<Cidade> saveCidades(List<CamposCsvDTO> listCsv, List<Estado> listEstados) {
+        return cidadeService.saveAllInBatch(listCsv.stream().map(dto -> new Cidade(
+                dto.getDesCidade(),
+                listEstados.stream().filter(estado -> Objects.equals(estado.getDesEstado(), dto.getDesEstado())).findFirst().orElse(null)
+        )).distinct().toList());
+    }
+
+    private List<Estado> saveEstados(List<CamposCsvDTO> listCsv){
+        return estadoService.saveAllInBatch(listCsv.stream().map(CamposCsvDTO::getDesEstado).distinct().map(Estado::new).toList());
+    }
+
+    @Deprecated
+    private List<MatriculasAnosCursos> createMatriculasAnosCursos(CursoIES cursoIes, Integer[] anos, Integer[] quantidades) {
+        List<MatriculasAnosCursos> listMatriculasAnosCursos = new ArrayList(9);
+        Arrays.stream(anos).forEach(ano -> {
+            MatriculasAnosCursos matriculasAnosCursos = new MatriculasAnosCursos();
+            matriculasAnosCursos.setCursoIES(cursoIes);
+            matriculasAnosCursos.setAno(ano);
+            matriculasAnosCursos.setQuantidade(this.getQuantidadeDoAno(ano, quantidades));
+            listMatriculasAnosCursos.add(matriculasAnosCursos);
+        });
+        return listMatriculasAnosCursos;
+    }
+
+    private Integer getQuantidadeDoAno(Integer ano, Integer[] quantidades) {
+        int indice = ano - 2014;
+        if (indice < 0 || indice >= quantidades.length) {
+            return 0;
+        }
+        return quantidades[indice];
+    }
+
 
     private List<CamposCsvDTO> leituraCsv(String caminhoCsv, boolean possuiCabecalho, String separador) {
 
