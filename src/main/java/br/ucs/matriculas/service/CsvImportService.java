@@ -21,17 +21,15 @@ public class CsvImportService {
     private final CursoService cursoService;
     private final CursoIESService cursoIESService;
     private final CampusService campusService;
-    private final MatriculasAnosCursosService matriculasAnosCursosService;
     Logger logger = Logger.getLogger(CsvImportService.class.getName());
 
-    public CsvImportService(EstadoService estadoService, CidadeService cidadeService, InstituicaoEnsinoSuperiorService instituicaoEnsinoSuperiorService, CursoService cursoService, CursoIESService cursoIESService, CampusService campusService, MatriculasAnosCursosService matriculasAnosCursosService) {
+    public CsvImportService(EstadoService estadoService, CidadeService cidadeService, InstituicaoEnsinoSuperiorService instituicaoEnsinoSuperiorService, CursoService cursoService, CursoIESService cursoIESService, CampusService campusService) {
         this.estadoService = estadoService;
         this.cidadeService = cidadeService;
         this.instituicaoEnsinoSuperiorService = instituicaoEnsinoSuperiorService;
         this.cursoService = cursoService;
         this.cursoIESService = cursoIESService;
         this.campusService = campusService;
-        this.matriculasAnosCursosService = matriculasAnosCursosService;
     }
 
     public void importarCsv(String caminhoCsv, boolean possuiCabecalho, String separador) {
@@ -50,25 +48,6 @@ public class CsvImportService {
         List<Campus> listCampus = this.saveCampuses(listCsv, listCidades, listIES);
 
         //List<MatriculasAnosCursos> lstMatriculasAnosCursos = this.saveMatriculasAnosCursos(listCsv, listCursoIes);
-    }
-
-    @Deprecated
-    private List<MatriculasAnosCursos> saveMatriculasAnosCursos(List<CamposCsvDTO> listCsv, List<CursoIES> listCursoIes) {
-        Map<String, CursoIES> mapaCursoIes = listCursoIes.stream()
-                .collect(Collectors.toMap(
-                        ci -> ci.getIdCurso().getDesCurso() + "#" + ci.getIdIES().getDesIES(),
-                        ci -> ci,
-                        (valorAntigo, valorNovo) -> valorAntigo
-                ));
-
-        return this.matriculasAnosCursosService.saveAllInBatch(
-                listCsv.stream().map(dto -> this.createMatriculasAnosCursos(
-                                mapaCursoIes.get(dto.getDesCurso() + "#" + dto.getDesIES()),
-                                new Integer[]{2014, 2015, 2016, 2017, 2018, 2020, 2021, 2022},
-                                new Integer[]{dto.getAno2014(), dto.getAno2015(), dto.getAno2016(), dto.getAno2017(), dto.getAno2018(),
-                                        dto.getAno2019(), dto.getAno2020(), dto.getAno2021(), dto.getAno2022()})).distinct().toList().stream()
-                        .flatMap(List::stream)
-                        .collect(Collectors.toList()));
     }
 
     private List<Campus> saveCampuses(List<CamposCsvDTO> listCsv, List<Cidade> listCidades, List<InstituicaoEnsinoSuperior> listIES) {
@@ -124,19 +103,6 @@ public class CsvImportService {
 
     private List<Estado> saveEstados(List<CamposCsvDTO> listCsv){
         return estadoService.saveAllInBatch(listCsv.stream().map(CamposCsvDTO::getDesEstado).distinct().map(Estado::new).toList());
-    }
-
-    @Deprecated
-    private List<MatriculasAnosCursos> createMatriculasAnosCursos(CursoIES cursoIes, Integer[] anos, Integer[] quantidades) {
-        List<MatriculasAnosCursos> listMatriculasAnosCursos = new ArrayList(9);
-        Arrays.stream(anos).forEach(ano -> {
-            MatriculasAnosCursos matriculasAnosCursos = new MatriculasAnosCursos();
-            matriculasAnosCursos.setCursoIES(cursoIes);
-            matriculasAnosCursos.setAno(ano);
-            matriculasAnosCursos.setQuantidade(this.getQuantidadeDoAno(ano, quantidades));
-            listMatriculasAnosCursos.add(matriculasAnosCursos);
-        });
-        return listMatriculasAnosCursos;
     }
 
     private Integer getQuantidadeDoAno(Integer ano, Integer[] quantidades) {
