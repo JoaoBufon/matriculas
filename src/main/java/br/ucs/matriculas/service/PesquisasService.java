@@ -1,0 +1,24 @@
+package br.ucs.matriculas.service;
+
+import br.ucs.matriculas.dao.PesquisasDAO;
+import br.ucs.matriculas.dto.RankingCursos;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class PesquisasService {
+
+    private PesquisasDAO pesquisasDAO;
+
+    public PesquisasService(PesquisasDAO pesquisasDAO) {
+        this.pesquisasDAO = pesquisasDAO;
+    }
+    public Long getTotalAlunos(int ano, String modalidade){
+        return this.pesquisasDAO.getTotalAlunos(ano, modalidade);
+    }
+
+    public List<RankingCursos> getRankingCursos(String modalidade){
+        return this.pesquisasDAO.getRankingCursos(modalidade);
+    }
+}
