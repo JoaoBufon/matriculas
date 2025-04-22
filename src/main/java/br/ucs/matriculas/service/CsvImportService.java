@@ -32,8 +32,8 @@ public class CsvImportService {
         this.campusService = campusService;
     }
 
-    public void importarCsv(String caminhoCsv, boolean possuiCabecalho, String separador) {
-        List<CamposCsvDTO> listCsv = this.leituraCsv(caminhoCsv, possuiCabecalho, separador);
+    public void importarCsv(String caminhoCsv) {
+        List<CamposCsvDTO> listCsv = this.leituraCsv(caminhoCsv);
 
         List<Estado> listEstados = this.saveEstados(listCsv);
 
@@ -43,35 +43,105 @@ public class CsvImportService {
 
         List<Curso> listCursos = this.saveCursos(listCsv);
 
-        List<CursoIES> listCursoIes = this.saveCursosIes(listCsv,listCursos, listIES);
-
         List<Campus> listCampus = this.saveCampuses(listCsv, listCidades, listIES);
 
-        //List<MatriculasAnosCursos> lstMatriculasAnosCursos = this.saveMatriculasAnosCursos(listCsv, listCursoIes);
+        List<CursoIES> listCursoIes = this.saveCursosIes(listCsv,listCursos, listIES, listCampus);
+
     }
 
     private List<Campus> saveCampuses(List<CamposCsvDTO> listCsv, List<Cidade> listCidades, List<InstituicaoEnsinoSuperior> listIES) {
+
+        Map<String, Cidade> mapCidades = listCidades.stream()
+                .collect(Collectors.toMap(
+                        Cidade::getDesCidade,
+                        cidade -> cidade,
+                        (valorAntigo, valorNovo) -> valorAntigo
+                ));
+
+        Map<String, InstituicaoEnsinoSuperior> mapIes = listIES.stream()
+                .collect(Collectors.toMap(
+                        InstituicaoEnsinoSuperior::getDesIES,
+                        ies -> ies,
+                        (valorAntigo, valorNovo) -> valorAntigo
+                ));
+
         return campusService.saveAllCampusesInBatch(listCsv.stream().map(dto -> new Campus(
-                listCidades.stream().filter(cidade -> Objects.equals(cidade.getDesCidade(), dto.getDesCidade())).findFirst().orElse(null),
-                listIES.stream().filter(ies -> Objects.equals(dto.getDesIES(), ies.getDesIES())).findFirst().orElse(null)
+                mapCidades.get(dto.getDesCidade()),
+                mapIes.get(dto.getDesIES())
         )).distinct().toList());
     }
 
-    private List<CursoIES> saveCursosIes(List<CamposCsvDTO> listCsv, List<Curso> listCursos, List<InstituicaoEnsinoSuperior> listIES) {
-        return cursoIESService.saveAllInBatch(listCsv.stream().map(dto -> new CursoIES(
-                listCursos.stream().filter(curso -> Objects.equals(dto.getDesCurso(), curso.getDesCurso())).findFirst().orElse(null),
-                listIES.stream().filter(ies -> Objects.equals(dto.getDesIES(), ies.getDesIES())).findFirst().orElse(null),
-                dto.getModalidade(),
-                dto.getAno2014(),
-                dto.getAno2015(),
-                dto.getAno2016(),
-                dto.getAno2017(),
-                dto.getAno2018(),
-                dto.getAno2019(),
-                dto.getAno2020(),
-                dto.getAno2021(),
-                dto.getAno2022()
-        )).distinct().toList());
+    private List<CursoIES> saveCursosIes(List<CamposCsvDTO> listCsv, List<Curso> listCursos, List<InstituicaoEnsinoSuperior> listIES, List<Campus> listCampus) {
+
+        Map<String, Curso> mapCursos = listCursos.stream()
+                .collect(Collectors.toMap(
+                        curso -> curso.getDesCurso() + "#" + curso.getGrau(),
+                        curso -> curso,
+                        (valorAntigo, valorNovo) -> valorAntigo
+                ));
+
+        Map<String, InstituicaoEnsinoSuperior> mapIes = listIES.stream()
+                .collect(Collectors.toMap(
+                        InstituicaoEnsinoSuperior::getDesIES,
+                        ies -> ies,
+                        (valorAntigo, valorNovo) -> valorAntigo
+                ));
+
+        Map<String, Campus> mapCampus = listCampus.stream()
+                .collect(Collectors.toMap(
+                        campus -> campus.getCidade().getDesCidade() + "#" + campus.getInstituicaoEnsinoSuperior().getDesIES(),
+                        campus -> campus,
+                        (valorAntigo, valorNovo) -> valorAntigo
+                ));
+
+        Map<String, CursoIES> cursoIesMap = new HashMap<>();
+
+        for (CamposCsvDTO dto : listCsv) {
+            String cursoKey = dto.getDesCurso() + "#" + dto.getGrau();
+            String iesKey = dto.getDesIES();
+            String campusKey = dto.getDesCidade() + "#" + iesKey;
+
+            Curso curso = mapCursos.get(cursoKey);
+            InstituicaoEnsinoSuperior ies = mapIes.get(iesKey);
+            Campus campus = mapCampus.get(campusKey);
+
+            if (curso == null || ies == null || campus == null) {
+                continue;
+            }
+
+            String compositeKey = cursoKey + "#" + dto.getModalidade() + "#" + iesKey + "#" + campusKey;
+
+            CursoIES existente = cursoIesMap.get(compositeKey);
+            if (existente == null) {
+                cursoIesMap.put(compositeKey, new CursoIES(
+                        curso,
+                        ies,
+                        dto.getModalidade(),
+                        dto.getAno2014(),
+                        dto.getAno2015(),
+                        dto.getAno2016(),
+                        dto.getAno2017(),
+                        dto.getAno2018(),
+                        dto.getAno2019(),
+                        dto.getAno2020(),
+                        dto.getAno2021(),
+                        dto.getAno2022(),
+                        campus
+                ));
+            } else {
+                existente.setAno2014(existente.getAno2014() + dto.getAno2014());
+                existente.setAno2015(existente.getAno2015() + dto.getAno2015());
+                existente.setAno2016(existente.getAno2016() + dto.getAno2016());
+                existente.setAno2017(existente.getAno2017() + dto.getAno2017());
+                existente.setAno2018(existente.getAno2018() + dto.getAno2018());
+                existente.setAno2019(existente.getAno2019() + dto.getAno2019());
+                existente.setAno2020(existente.getAno2020() + dto.getAno2020());
+                existente.setAno2021(existente.getAno2021() + dto.getAno2021());
+                existente.setAno2022(existente.getAno2022() + dto.getAno2022());
+            }
+        }
+
+        return cursoIESService.saveAllInBatch(new ArrayList<>(cursoIesMap.values()));
     }
 
     private List<Curso> saveCursos(List<CamposCsvDTO> listCsv) {
@@ -95,9 +165,17 @@ public class CsvImportService {
     }
 
     private List<Cidade> saveCidades(List<CamposCsvDTO> listCsv, List<Estado> listEstados) {
+
+        Map<String, Estado> mapEstados = listEstados.stream()
+                .collect(Collectors.toMap(
+                        Estado::getDesEstado,
+                        estado -> estado,
+                        (valorAntigo, valorNovo) -> valorAntigo
+                ));
+
         return cidadeService.saveAllInBatch(listCsv.stream().map(dto -> new Cidade(
                 dto.getDesCidade(),
-                listEstados.stream().filter(estado -> Objects.equals(estado.getDesEstado(), dto.getDesEstado())).findFirst().orElse(null)
+                mapEstados.get(dto.getDesEstado())
         )).distinct().toList());
     }
 
@@ -105,27 +183,16 @@ public class CsvImportService {
         return estadoService.saveAllInBatch(listCsv.stream().map(CamposCsvDTO::getDesEstado).distinct().map(Estado::new).toList());
     }
 
-    private Integer getQuantidadeDoAno(Integer ano, Integer[] quantidades) {
-        int indice = ano - 2014;
-        if (indice < 0 || indice >= quantidades.length) {
-            return 0;
-        }
-        return quantidades[indice];
-    }
+    private List<CamposCsvDTO> leituraCsv(String caminhoCsv) {
 
-
-    private List<CamposCsvDTO> leituraCsv(String caminhoCsv, boolean possuiCabecalho, String separador) {
-
-        caminhoCsv = "C:\\Users\\joaob\\IdeaProjects\\Matriculados Brasil - Projeto\\Matriculados Brasil - Projeto.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(caminhoCsv))) {
-            if (possuiCabecalho) {
-                String header = br.readLine();
-            }
+            String header = br.readLine();
+
 
             List<CamposCsvDTO> listLinhas = new ArrayList<>();
             String linha;
             while ((linha = br.readLine()) != null) {
-                String[] campos = linha.split(separador, -1);
+                String[] campos = linha.split(";", -1);
                 listLinhas.add(this.parseCamposCsvDTO(campos));
             }
 

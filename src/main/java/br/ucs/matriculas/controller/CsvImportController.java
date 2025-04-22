@@ -4,6 +4,7 @@ import br.ucs.matriculas.dto.CamposCsvDTO;
 import br.ucs.matriculas.service.CsvImportService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class CsvImportController {
     }
 
     @GetMapping
-    public void lerCsv(){
-        this.csvImportService.importarCsv("C:\\Users\\joaob\\OneDrive\\Documentos\\projeto e arquitura de software\\Matriculados Brasil - Projeto", true, ";");
+    public void lerCsv(@RequestParam(required = false, defaultValue = "..\\Matriculados Brasil - Projeto\\Matriculados Brasil - Projeto.csv") String caminhoCsv){
+        this.csvImportService.importarCsv(caminhoCsv);
     }
 }
