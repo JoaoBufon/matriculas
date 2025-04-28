@@ -48,13 +48,13 @@ O servidor backend estará disponível na URL `http://localhost:8080`.
 2. Instale as dependências:
 
     ```bash
-    npm install
+    yarn
     ```
 
 3. Execute a aplicação:
 
     ```bash
-    npm start
+    yarn start
     ```
 
 O frontend estará disponível na URL `http://localhost:3000`.
