@@ -34,7 +34,7 @@ public class CursoIESController {
     }
 
     @DeleteMapping( value = "/{idCursoIES}")
-    public ResponseEntity<Void> delete(@RequestBody final Long idCursoIES){
+    public ResponseEntity<Void> delete(@PathVariable final Long idCursoIES){
         return this.cursoIESService.delete(idCursoIES);
     }
 }

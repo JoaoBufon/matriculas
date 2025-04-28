@@ -34,7 +34,7 @@ public class EstadoController {
     }
 
     @DeleteMapping( value = "/{idEstado}")
-    public ResponseEntity<Void> delete(@RequestBody final Long idEstado){
+    public ResponseEntity<Void> delete(@PathVariable final Long idEstado){
         return this.estadoService.delete(idEstado);
     }
 }

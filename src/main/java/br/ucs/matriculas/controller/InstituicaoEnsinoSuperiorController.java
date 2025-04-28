@@ -33,7 +33,7 @@ public class InstituicaoEnsinoSuperiorController {
     }
 
     @DeleteMapping( value = "/{idIES}")
-    public ResponseEntity<Void> delete(@RequestBody final Long idIES){
+    public ResponseEntity<Void> delete(@PathVariable final Long idIES){
         return this.instituicaoEnsinoSuperiorService.delete(idIES);
     }
 }

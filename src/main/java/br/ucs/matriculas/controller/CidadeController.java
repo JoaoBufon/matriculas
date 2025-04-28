@@ -33,7 +33,7 @@ public class CidadeController {
     }
 
     @DeleteMapping( value = "/{idCidade}")
-    public ResponseEntity<Void> delete(@RequestBody final Long idCidade){
+    public ResponseEntity<Void> delete(@PathVariable final Long idCidade){
         return this.cidadeService.delete(idCidade);
     }
 }
