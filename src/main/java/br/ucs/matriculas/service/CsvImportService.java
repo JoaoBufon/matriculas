@@ -68,7 +68,7 @@ public class CsvImportService {
         return campusService.saveAllCampusesInBatch(listCsv.stream().map(dto -> new Campus(
                 mapCidades.get(dto.getDesCidade()),
                 mapIes.get(dto.getDesIES())
-        )).distinct().toList());
+        )).distinct().collect(Collectors.toList()));
     }
 
     private List<CursoIES> saveCursosIes(List<CamposCsvDTO> listCsv, List<Curso> listCursos, List<InstituicaoEnsinoSuperior> listIES, List<Campus> listCampus) {
@@ -149,7 +149,7 @@ public class CsvImportService {
                 dto.getDesCurso(),
                 dto.getDesDetalhadoCurso(),
                 dto.getGrau()
-        )).distinct().toList());
+        )).distinct().collect(Collectors.toList()));
     }
 
     private List<InstituicaoEnsinoSuperior> saveIes(List<CamposCsvDTO> listCsv) {
@@ -161,7 +161,7 @@ public class CsvImportService {
                         dto.getCategoriaAdministrativa()
                 ))
                 .distinct()
-                .toList());
+                .collect(Collectors.toList()));
     }
 
     private List<Cidade> saveCidades(List<CamposCsvDTO> listCsv, List<Estado> listEstados) {
@@ -176,11 +176,11 @@ public class CsvImportService {
         return cidadeService.saveAllInBatch(listCsv.stream().map(dto -> new Cidade(
                 dto.getDesCidade(),
                 mapEstados.get(dto.getDesEstado())
-        )).distinct().toList());
+        )).distinct().collect(Collectors.toList()));
     }
 
     private List<Estado> saveEstados(List<CamposCsvDTO> listCsv){
-        return estadoService.saveAllInBatch(listCsv.stream().map(CamposCsvDTO::getDesEstado).distinct().map(Estado::new).toList());
+        return estadoService.saveAllInBatch(listCsv.stream().map(CamposCsvDTO::getDesEstado).distinct().map(Estado::new).collect(Collectors.toList()));
     }
 
     private List<CamposCsvDTO> leituraCsv(String caminhoCsv) {

@@ -1,7 +1,6 @@
 import api from "./api";
 import { TotalAlunosPorAno } from "../types/consultas/TotalAlunosPorAno";
 import { RankingCurso } from "../types/consultas/RankingCurso";
-import { TotalAlunosPorEstado } from "../types/consultas/TotalAlunosPorEstado";
 
 export const buscarTotalAlunosPorAno = async (
   ano: number,
