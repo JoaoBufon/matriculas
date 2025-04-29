@@ -19,42 +19,68 @@ public class PesquisasDAO {
     public PesquisasDAO(EntityManager em) {
         this.em = em;
     }
-    public Long getTotalAlunos(int ano, String modalidade){
+
+    public Long getTotalAlunos(int ano, String modalidade, String estado) {
         if (ano < 2014 || ano > 2022) {
             throw new IllegalArgumentException("Ano inválido: " + ano);
         }
 
         String columnName = "ano_" + ano;
-        StringBuilder sb = new StringBuilder("SELECT SUM("+ columnName + ") FROM curso_ies");
+        StringBuilder sb = new StringBuilder("SELECT SUM(" + columnName + ") FROM curso_ies ci");
 
-        if(modalidade != null && !modalidade.isEmpty()){
-            sb.append(" WHERE UPPER (modalidade) = '" + modalidade.toUpperCase() + "'");
+        sb.append(" JOIN cidade cid ON ci.id_cidade = cid.id_cidade");
+
+        sb.append(" JOIN estado est ON cid.id_estado = est.id_estado");
+
+        if (modalidade != null && !modalidade.isEmpty()) {
+            sb.append(" WHERE UPPER(ci.modalidade) = '" + modalidade.toUpperCase() + "'");
+        }
+
+        if (estado != null && !estado.isEmpty()) {
+            if (modalidade != null && !modalidade.isEmpty()) {
+                sb.append(" AND UPPER(est.des_estado) = '" + estado.toUpperCase() + "'");
+            } else {
+                sb.append(" WHERE UPPER(est.des_estado) = '" + estado.toUpperCase() + "'");
+            }
         }
 
         Query query = em.createNativeQuery(sb.toString());
 
         List<Object> list = query.getResultList();
 
-        if(list != null && !list.isEmpty()){
+        if (list != null && !list.isEmpty()) {
             return (Long) list.get(0);
         }
+
         return 0L;
     }
 
-    public List<RankingCursos> getRankingCursos(String modalidade){
+
+
+    public List<RankingCursos> getRankingCursos(String modalidade, String estado) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(" select ci.id_curso, c.des_curso, sum(ano_2022) nmrMatriculados ");
-        sb.append(" from curso_ies ci    ");
-        sb.append(" join curso c on ci.id_curso = c.id_curso ");
+        sb.append(" SELECT ci.id_curso, c.des_curso, sum(ano_2022) nmrMatriculados ");
+        sb.append(" FROM curso_ies ci ");
+        sb.append(" JOIN curso c ON ci.id_curso = c.id_curso ");
+        sb.append(" JOIN cidade cid ON ci.id_cidade = cid.id_cidade ");
+        sb.append(" JOIN estado est ON cid.id_estado = est.id_estado ");
 
-        if (modalidade != null && !modalidade.isEmpty()){
-            sb.append(" WHERE UPPER (modalidade) = '" + modalidade.toUpperCase() + "'");
+        if (modalidade != null && !modalidade.isEmpty()) {
+            sb.append(" WHERE UPPER(ci.modalidade) = '" + modalidade.toUpperCase() + "'");
         }
 
-        sb.append(" group by ci.id_curso , c.des_curso ");
-        sb.append(" order by sum(ano_2022) desc ");
-        sb.append(" limit 10 ");
+        if (estado != null && !estado.isEmpty()) {
+            if (modalidade != null && !modalidade.isEmpty()) {
+                sb.append(" AND UPPER(est.des_estado) = '" + estado.toUpperCase() + "'");
+            } else {
+                sb.append(" WHERE UPPER(est.des_estado) = '" + estado.toUpperCase() + "'");
+            }
+        }
+
+        sb.append(" GROUP BY ci.id_curso, c.des_curso ");
+        sb.append(" ORDER BY sum(ano_2022) DESC ");
+        sb.append(" LIMIT 10 ");
 
         Query query = em.createNativeQuery(sb.toString());
         List<Object[]> results = query.getResultList();
@@ -70,4 +96,7 @@ public class PesquisasDAO {
 
         return ranking;
     }
+
+
+
 }

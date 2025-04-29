@@ -14,11 +14,11 @@ public class PesquisasService {
     public PesquisasService(PesquisasDAO pesquisasDAO) {
         this.pesquisasDAO = pesquisasDAO;
     }
-    public Long getTotalAlunos(int ano, String modalidade){
-        return this.pesquisasDAO.getTotalAlunos(ano, modalidade);
+    public Long getTotalAlunos(int ano, String modalidade, String estado){
+        return this.pesquisasDAO.getTotalAlunos(ano, modalidade, estado);
     }
 
-    public List<RankingCursos> getRankingCursos(String modalidade){
-        return this.pesquisasDAO.getRankingCursos(modalidade);
+    public List<RankingCursos> getRankingCursos(String modalidade, String estado){
+        return this.pesquisasDAO.getRankingCursos(modalidade, estado);
     }
 }
