@@ -1,4 +1,5 @@
 export interface RankingCurso {
-  nomeCurso: string;
-  totalMatriculas: number;
+  idCurso: number;
+  desCurso: string;
+  nmrMatriculados: number;
 }

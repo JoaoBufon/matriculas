@@ -1,4 +1,4 @@
 export interface TotalAlunosPorAno {
-  ano: number;
-  totalAlunos: number;
+  numAno: number;
+  nmrTotalAlunos: number;
 }
