@@ -20,7 +20,7 @@ public class CsvImportController {
     }
 
     @GetMapping
-    public void lerCsv(@RequestParam(required = false, defaultValue = "..\\Matriculados Brasil - Projeto\\Matriculados Brasil - Projeto.csv") String caminhoCsv){
+    public void lerCsv(@RequestParam(required = false, defaultValue = "Matriculados Brasil - Projeto.csv") String caminhoCsv){
         this.csvImportService.importarCsv(caminhoCsv);
     }
 }

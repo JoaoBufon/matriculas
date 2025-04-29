@@ -5,12 +5,12 @@ import br.ucs.matriculas.entity.*;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class CsvImportService {
@@ -185,6 +185,12 @@ public class CsvImportService {
 
     private List<CamposCsvDTO> leituraCsv(String caminhoCsv) {
 
+        logger.info("Caminho CSV: " + caminhoCsv);
+        File file = new File(caminhoCsv);
+
+        // Obtém o caminho completo do arquivo
+        String caminhoCompleto = file.getAbsolutePath();
+        logger.info("Caminho completo: " + caminhoCompleto);
         try (BufferedReader br = new BufferedReader(new FileReader(caminhoCsv))) {
             String header = br.readLine();
 
