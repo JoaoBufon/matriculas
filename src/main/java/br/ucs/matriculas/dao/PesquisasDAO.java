@@ -20,7 +20,7 @@ public class PesquisasDAO {
         this.em = em;
     }
 
-    public Long getTotalAlunos(int ano, String modalidade, String estado) {
+    public Long getTotalAlunos(int ano, String modalidade, String estado, String desCurso) {
         String columnName = this.getColumnAno(ano);
         StringBuilder sb = new StringBuilder("SELECT SUM(" + columnName + ") FROM curso_ies ci");
 
@@ -30,15 +30,23 @@ public class PesquisasDAO {
             sb.append(" JOIN estado est ON cid.id_estado = est.id_estado");
         }
 
+        if(desCurso != null && !desCurso.isEmpty()){
+            sb.append(" JOIN curso cur ON ci.id_curso = cur.id_curso ");
+        }
+
         if (modalidade != null && !modalidade.isEmpty() && !Objects.equals(modalidade, "ALL")) {
             sb.append(" AND UPPER(ci.modalidade) = '" + modalidade.toUpperCase() + "'");
         }
 
-        if (estado != null && !estado.isEmpty()) {
+        if (estado != null && !estado.isEmpty() && !Objects.equals(estado, "ALL")) {
             sb.append(" AND UPPER(est.des_estado) = '" + estado.toUpperCase() + "'");
         }
 
-        Query query = em.createNativeQuery(sb.toString().replaceFirst("AND", "WHERE"));
+        if (desCurso != null && !desCurso.isEmpty()) {
+            sb.append(" AND UPPER(cur.des_curso) = '" + desCurso.toUpperCase() + "'");
+        }
+
+                Query query = em.createNativeQuery(sb.toString().replaceFirst("AND", "WHERE"));
 
         List<Object> list = query.getResultList();
 

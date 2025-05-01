@@ -2,31 +2,39 @@ import { useEffect, useState } from "react";
 import { buscarTotalAlunosPorAno } from "../services/consultasService";
 import { TotalAlunosPorAno } from "../types/consultas/TotalAlunosPorAno";
 import { estadosBrasil } from "../constants/estadosBrasil";
+import AutocompleteCurso from "./AutocompleteCurso";
 
 const TotalAlunosPorAnoPage = () => {
   const [dados, setDados] = useState<TotalAlunosPorAno[]>([]);
   const [modalidade, setModalidade] = useState<string | undefined>();
   const [estado, setEstado] = useState<string | undefined>();
+  const [curso, setCurso] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const carregarDados = async () => {
       setLoading(true);
       const anos = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022];
-      const resultados = await Promise.all(
-        anos.map((ano) => buscarTotalAlunosPorAno(ano, modalidade, estado))
-      );
+      try {
+        const resultados = await Promise.all(
+          anos.map((ano) => buscarTotalAlunosPorAno(ano, modalidade, estado, curso))
+        );
 
-      const dadosFormatados = resultados.map((resultado, index) => ({
-        numAno: anos[index],
-        nmrTotalAlunos: Number(resultado),
-      }));
+        const dadosFormatados = resultados.map((resultado, index) => ({
+          numAno: anos[index],
+          nmrTotalAlunos: Number(resultado),
+        }));
 
-      setDados(dadosFormatados);
-      setLoading(false);
+        setDados(dadosFormatados);
+      } catch (error) {
+        console.error("Erro ao carregar dados:", error);
+      } finally {
+        setLoading(false);
+      }
     };
+
     carregarDados();
-  }, [modalidade, estado]);
+  }, [modalidade, estado, curso]); // Include curso in the dependency array
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -35,6 +43,7 @@ const TotalAlunosPorAnoPage = () => {
       </h1>
 
       <div className="mb-6 flex flex-col md:flex-row gap-4 justify-center">
+        {/* Select for Modalidade */}
         <select
           value={modalidade}
           onChange={(e) => setModalidade(e.target.value)}
@@ -45,17 +54,24 @@ const TotalAlunosPorAnoPage = () => {
           <option value="Presencial">Presencial</option>
         </select>
 
+        {/* Select for Estado */}
         <select
           value={estado}
           onChange={(e) => setEstado(e.target.value)}
           className="border p-3 rounded w-full md:w-1/3 bg-white shadow"
         >
+        
           {estadosBrasil.map((estado) => (
             <option key={estado.value} value={estado.value}>
               {estado.label}
             </option>
           ))}
         </select>
+
+        {/* Autocomplete for Curso */}
+        <AutocompleteCurso
+          onSelect={(curso) => setCurso(curso?.desCurso)} // Update curso state when a course is selected
+        />
       </div>
 
       <div className="overflow-x-auto">

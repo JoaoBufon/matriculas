@@ -5,20 +5,30 @@ import { RankingCurso } from "../types/consultas/RankingCurso";
 export const buscarTotalAlunosPorAno = async (
   ano: number,
   modalidade?: string,
-  estado?: string
+  estado?: string,
+  curso?: string
 ): Promise<TotalAlunosPorAno[]> => {
   let endpoint = `/pesquisas/totalAlunos/${ano}`;
 
-  if (!modalidade && estado) {
+  console.log(modalidade, estado, curso);
+  if (!modalidade && (estado || curso)) {
     modalidade = "ALL";
   }
 
-  if (modalidade && estado) {
+  if (!estado && curso) {
+    estado = "ALL";
+  }
+
+  if (modalidade && curso && estado) {
+    endpoint += `/${modalidade}/${estado}/${curso}`;
+  }else if (modalidade && estado) {
     endpoint += `/${modalidade}/${estado}`;
   } else if (modalidade) {
     endpoint += `/${modalidade}`;
   } else if (estado) {
     endpoint += `/${estado}`;
+  } else if (curso) {
+    endpoint += `/${curso}`;
   }
 
   const response = await api.get(endpoint);

@@ -14,8 +14,8 @@ public class PesquisasService {
     public PesquisasService(PesquisasDAO pesquisasDAO) {
         this.pesquisasDAO = pesquisasDAO;
     }
-    public Long getTotalAlunos(int ano, String modalidade, String estado){
-        return this.pesquisasDAO.getTotalAlunos(ano, modalidade, estado);
+    public Long getTotalAlunos(int ano, String modalidade, String estado, String desCurso){
+        return this.pesquisasDAO.getTotalAlunos(ano, modalidade, estado, desCurso);
     }
 
     public List<RankingCursos> getRankingCursos(int ano, String modalidade, String estado){

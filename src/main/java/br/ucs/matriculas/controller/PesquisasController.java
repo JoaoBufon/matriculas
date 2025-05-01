@@ -22,17 +22,22 @@ public class PesquisasController {
 
     @GetMapping("/totalAlunos/{ano}")
     public ResponseEntity<Long> getTotalAlunos(@PathVariable final int ano){
-        return ResponseEntity.ok(this.pesquisasService.getTotalAlunos(ano, null, null));
+        return ResponseEntity.ok(this.pesquisasService.getTotalAlunos(ano, null, null, null));
     }
 
     @GetMapping("/totalAlunos/{ano}/{modalidade}")
     public ResponseEntity<Long> getTotalAlunos(@PathVariable final int ano, @PathVariable final String modalidade){
-        return ResponseEntity.ok(this.pesquisasService.getTotalAlunos(ano, modalidade, null));
+        return ResponseEntity.ok(this.pesquisasService.getTotalAlunos(ano, modalidade, null, null));
     }
 
     @GetMapping("/totalAlunos/{ano}/{modalidade}/{estado}")
     public ResponseEntity<Long> getTotalAlunos(@PathVariable final int ano, @PathVariable final String modalidade, @PathVariable final String estado){
-        return ResponseEntity.ok(this.pesquisasService.getTotalAlunos(ano, modalidade, estado));
+        return ResponseEntity.ok(this.pesquisasService.getTotalAlunos(ano, modalidade, estado, null));
+    }
+
+    @GetMapping("/totalAlunos/{ano}/{modalidade}/{estado}/{desCurso}")
+    public ResponseEntity<Long> getTotalAlunos(@PathVariable final int ano, @PathVariable final String modalidade, @PathVariable final String estado, @PathVariable final String desCurso){
+        return ResponseEntity.ok(this.pesquisasService.getTotalAlunos(ano, modalidade, estado, desCurso));
     }
 
     @GetMapping("/rankingCursos/{ano}")
