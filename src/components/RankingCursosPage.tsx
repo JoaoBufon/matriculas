@@ -5,6 +5,7 @@ import { estadosBrasil } from "../constants/estadosBrasil";
 
 const RankingCursosPage = () => {
   const [ranking, setRanking] = useState<RankingCurso[]>([]);
+  const [ano, setAno] = useState<number>(2022); // Default year
   const [modalidade, setModalidade] = useState<string | undefined>();
   const [estado, setEstado] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -12,34 +13,49 @@ const RankingCursosPage = () => {
   useEffect(() => {
     const carregarRanking = async () => {
       setLoading(true);
-      const resultado = await buscarRankingCursos(modalidade, estado);
+      const resultado = await buscarRankingCursos(ano, modalidade, estado);
       setRanking(resultado);
       setLoading(false);
     };
     carregarRanking();
-  }, [modalidade, estado]);
+  }, [ano, modalidade, estado]);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-        Ranking de Cursos em 2022
+        Ranking de Cursos
       </h1>
 
       <div className="mb-6 flex flex-col md:flex-row gap-4 justify-center">
+        {/* Select for Year */}
+        <select
+          value={ano}
+          onChange={(e) => setAno(Number(e.target.value))}
+          className="border p-3 rounded w-full md:w-1/4 bg-white shadow"
+        >
+          {Array.from({ length: 2022 - 2014 + 1 }, (_, i) => 2014 + i).map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+
+        {/* Select for Modalidade */}
         <select
           value={modalidade}
           onChange={(e) => setModalidade(e.target.value)}
-          className="border p-3 rounded w-full md:w-1/3 bg-white shadow"
+          className="border p-3 rounded w-full md:w-1/4 bg-white shadow"
         >
           <option value="">Todas Modalidades</option>
           <option value="EAD">EAD</option>
           <option value="Presencial">Presencial</option>
         </select>
 
+        {/* Select for Estado */}
         <select
           value={estado}
           onChange={(e) => setEstado(e.target.value)}
-          className="border p-3 rounded w-full md:w-1/3 bg-white shadow"
+          className="border p-3 rounded w-full md:w-1/4 bg-white shadow"
         >
           {estadosBrasil.map((estado) => (
             <option key={estado.value} value={estado.value}>

@@ -21,11 +21,7 @@ public class PesquisasDAO {
     }
 
     public Long getTotalAlunos(int ano, String modalidade, String estado) {
-        if (ano < 2014 || ano > 2022) {
-            throw new IllegalArgumentException("Ano inválido: " + ano);
-        }
-
-        String columnName = "ano_" + ano;
+        String columnName = this.getColumnAno(ano);
         StringBuilder sb = new StringBuilder("SELECT SUM(" + columnName + ") FROM curso_ies ci");
 
         if (estado != null && !estado.isEmpty()) {
@@ -53,10 +49,11 @@ public class PesquisasDAO {
         return 0L;
     }
 
-    public List<RankingCursos> getRankingCursos(String modalidade, String estado) {
+    public List<RankingCursos> getRankingCursos(int ano, String modalidade, String estado) {
+        String columnName = this.getColumnAno(ano);
         StringBuilder sb = new StringBuilder();
 
-        sb.append(" SELECT ci.id_curso, c.des_curso, sum(ano_2022) nmrMatriculados ");
+        sb.append(" SELECT ci.id_curso, c.des_curso, sum( " + columnName+ " ) nmrMatriculados ");
         sb.append(" FROM curso_ies ci ");
         sb.append(" JOIN curso c ON ci.id_curso = c.id_curso ");
         sb.append(" JOIN campus camp ON camp.id_campus = ci.id_campus ");
@@ -72,7 +69,7 @@ public class PesquisasDAO {
         }
 
         sb.append(" GROUP BY ci.id_curso, c.des_curso ");
-        sb.append(" ORDER BY sum(ano_2022) DESC ");
+        sb.append(" ORDER BY sum( " + columnName + " ) DESC ");
         sb.append(" LIMIT 10 ");
 
         Query query = em.createNativeQuery(sb.toString().replaceFirst("AND", "WHERE"));
@@ -91,5 +88,11 @@ public class PesquisasDAO {
     }
 
 
+    private String getColumnAno(int ano) {
+        if (ano < 2014 || ano > 2022) {
+            throw new IllegalArgumentException("Ano inválido: " + ano);
+        }
 
+        return "ano_" + ano;
+    }
 }

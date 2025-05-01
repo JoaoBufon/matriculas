@@ -41,7 +41,7 @@ const App: React.FC = () => {
     const fetchData = async () => {
       try {
         // Fetch Ranking de Cursos data
-        const ranking = await buscarRankingCursos();
+        const ranking = await buscarRankingCursos(2022);
         const rankingLabels = ranking.map((curso: any) => curso.desCurso);
         const rankingValues = ranking.map((curso: any) => curso.nmrMatriculados);
 
@@ -274,7 +274,7 @@ const App: React.FC = () => {
         {currentPage === "ranking" && <RankingCursosPage />}
         {currentPage === "totalAlunos" && <TotalAlunosPorAnoPage />}
         {currentPage === "importCsv" && <ImportCsvPage />}
-x      </div>
+      </div>
     </div>
   );
 };

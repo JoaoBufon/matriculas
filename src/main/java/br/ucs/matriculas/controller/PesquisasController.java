@@ -35,18 +35,18 @@ public class PesquisasController {
         return ResponseEntity.ok(this.pesquisasService.getTotalAlunos(ano, modalidade, estado));
     }
 
-    @GetMapping("/rankingCursos")
-    public ResponseEntity<List<RankingCursos>> getRankingCursos(){
-        return ResponseEntity.ok(this.pesquisasService.getRankingCursos(null, null));
+    @GetMapping("/rankingCursos/{ano}")
+    public ResponseEntity<List<RankingCursos>> getRankingCursos(@PathVariable final int ano){
+        return ResponseEntity.ok(this.pesquisasService.getRankingCursos(ano, null, null));
     }
 
-    @GetMapping("/rankingCursos/{modalidade}")
-    public ResponseEntity<List<RankingCursos>> getRankingCursos(@PathVariable final String modalidade){
-        return ResponseEntity.ok(this.pesquisasService.getRankingCursos(modalidade, null));
+    @GetMapping("/rankingCursos/{ano}/{modalidade}")
+    public ResponseEntity<List<RankingCursos>> getRankingCursos(@PathVariable final int ano, @PathVariable final String modalidade){
+        return ResponseEntity.ok(this.pesquisasService.getRankingCursos(ano, modalidade, null));
     }
 
-    @GetMapping("/rankingCursos/{modalidade}/{estado}")
-    public ResponseEntity<List<RankingCursos>> getRankingCursos(@PathVariable final String modalidade,  @PathVariable final String estado){
-        return ResponseEntity.ok(this.pesquisasService.getRankingCursos(modalidade, estado));
+    @GetMapping("/rankingCursos/{ano}/{modalidade}/{estado}")
+    public ResponseEntity<List<RankingCursos>> getRankingCursos(@PathVariable final int ano, @PathVariable final String modalidade,  @PathVariable final String estado){
+        return ResponseEntity.ok(this.pesquisasService.getRankingCursos(ano, modalidade, estado));
     }
 }

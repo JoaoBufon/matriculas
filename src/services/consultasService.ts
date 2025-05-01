@@ -26,10 +26,11 @@ export const buscarTotalAlunosPorAno = async (
 };
 
 export const buscarRankingCursos = async (
+  ano: number,
   modalidade?: string,
   estado?: string
 ): Promise<RankingCurso[]> => {
-  let endpoint = "/pesquisas/rankingCursos";
+  let endpoint = `/pesquisas/rankingCursos/${ano}`;
 
   if (!modalidade && estado) {
     modalidade = "ALL";

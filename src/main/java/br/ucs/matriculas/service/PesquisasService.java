@@ -18,7 +18,7 @@ public class PesquisasService {
         return this.pesquisasDAO.getTotalAlunos(ano, modalidade, estado);
     }
 
-    public List<RankingCursos> getRankingCursos(String modalidade, String estado){
-        return this.pesquisasDAO.getRankingCursos(modalidade, estado);
+    public List<RankingCursos> getRankingCursos(int ano, String modalidade, String estado){
+        return this.pesquisasDAO.getRankingCursos(ano, modalidade, estado);
     }
 }
