@@ -45,6 +45,7 @@ const AutocompleteCurso: React.FC<AutocompleteCursoProps> = ({ onSelect }) => {
     if (value.trim() === "") {
       setFilteredCursos([]);
       setShowDropdown(false);
+      onSelect(null); // Notify parent that the value is cleared
     } else {
       const normalizedValue = normalizeString(value);
       const filtered = cursos.filter((curso) =>

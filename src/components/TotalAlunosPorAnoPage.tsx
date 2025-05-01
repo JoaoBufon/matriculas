@@ -34,7 +34,7 @@ const TotalAlunosPorAnoPage = () => {
     };
 
     carregarDados();
-  }, [modalidade, estado, curso]); // Include curso in the dependency array
+  }, [modalidade, estado, curso]); // Trigger search when curso changes
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -60,7 +60,7 @@ const TotalAlunosPorAnoPage = () => {
           onChange={(e) => setEstado(e.target.value)}
           className="border p-3 rounded w-full md:w-1/3 bg-white shadow"
         >
-        
+          <option value="">Todos Estados</option>
           {estadosBrasil.map((estado) => (
             <option key={estado.value} value={estado.value}>
               {estado.label}
@@ -70,7 +70,7 @@ const TotalAlunosPorAnoPage = () => {
 
         {/* Autocomplete for Curso */}
         <AutocompleteCurso
-          onSelect={(curso) => setCurso(curso?.desCurso)} // Update curso state when a course is selected
+          onSelect={(curso) => setCurso(curso ? curso.desCurso : undefined)} // Set curso to undefined if null
         />
       </div>
 
