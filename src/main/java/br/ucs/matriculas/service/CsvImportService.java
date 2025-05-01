@@ -3,11 +3,9 @@ package br.ucs.matriculas.service;
 import br.ucs.matriculas.dto.CamposCsvDTO;
 import br.ucs.matriculas.entity.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -32,21 +30,26 @@ public class CsvImportService {
         this.campusService = campusService;
     }
 
-    public void importarCsv(String caminhoCsv) {
-        List<CamposCsvDTO> listCsv = this.leituraCsv(caminhoCsv);
+    public void importarCsv(MultipartFile file) {
+        try {
+            List<CamposCsvDTO> listCsv = leituraCsv(file);
 
-        List<Estado> listEstados = this.saveEstados(listCsv);
+            List<Estado> listEstados = this.saveEstados(listCsv);
 
-        List<Cidade> listCidades = this.saveCidades(listCsv, listEstados);
+            List<Cidade> listCidades = this.saveCidades(listCsv, listEstados);
 
-        List<InstituicaoEnsinoSuperior> listIES = this.saveIes(listCsv);
+            List<InstituicaoEnsinoSuperior> listIES = this.saveIes(listCsv);
 
-        List<Curso> listCursos = this.saveCursos(listCsv);
+            List<Curso> listCursos = this.saveCursos(listCsv);
 
-        List<Campus> listCampus = this.saveCampuses(listCsv, listCidades, listIES);
+            List<Campus> listCampus = this.saveCampuses(listCsv, listCidades, listIES);
 
-        List<CursoIES> listCursoIes = this.saveCursosIes(listCsv,listCursos, listIES, listCampus);
+            List<CursoIES> listCursoIes = this.saveCursosIes(listCsv, listCursos, listIES, listCampus);
 
+        } catch (Exception e) {
+            logger.severe("Erro ao importar o CSV: " + e.getMessage());
+            throw new RuntimeException("Erro ao importar o CSV", e);
+        }
     }
 
     private List<Campus> saveCampuses(List<CamposCsvDTO> listCsv, List<Cidade> listCidades, List<InstituicaoEnsinoSuperior> listIES) {
@@ -183,17 +186,9 @@ public class CsvImportService {
         return estadoService.saveAllInBatch(listCsv.stream().map(CamposCsvDTO::getDesEstado).distinct().map(Estado::new).collect(Collectors.toList()));
     }
 
-    private List<CamposCsvDTO> leituraCsv(String caminhoCsv) {
-
-        logger.info("Caminho CSV: " + caminhoCsv);
-        File file = new File(caminhoCsv);
-
-        // Obtém o caminho completo do arquivo
-        String caminhoCompleto = file.getAbsolutePath();
-        logger.info("Caminho completo: " + caminhoCompleto);
-        try (BufferedReader br = new BufferedReader(new FileReader(caminhoCsv))) {
-            String header = br.readLine();
-
+    private List<CamposCsvDTO> leituraCsv(MultipartFile file) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            String header = br.readLine(); // Read the header line
 
             List<CamposCsvDTO> listLinhas = new ArrayList<>();
             String linha;
@@ -203,11 +198,10 @@ public class CsvImportService {
             }
 
             return listLinhas;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.severe("Erro ao ler o arquivo CSV: " + e.getMessage());
-            return Collections.emptyList();
+            throw new RuntimeException("Erro ao ler o arquivo CSV", e);
         }
-
     }
 
     private CamposCsvDTO parseCamposCsvDTO(String[] campos) {

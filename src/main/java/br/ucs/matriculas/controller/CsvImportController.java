@@ -2,10 +2,9 @@ package br.ucs.matriculas.controller;
 
 import br.ucs.matriculas.dto.CamposCsvDTO;
 import br.ucs.matriculas.service.CsvImportService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,8 +18,13 @@ public class CsvImportController {
         this.csvImportService = csvImportService;
     }
 
-    @GetMapping
-    public void lerCsv(@RequestParam(required = false, defaultValue = "Matriculados Brasil - Projeto.csv") String caminhoCsv){
-        this.csvImportService.importarCsv(caminhoCsv);
+    @PostMapping("/upload")
+    public ResponseEntity<String> lerCsv(@RequestParam("file") MultipartFile file) {
+        try {
+            this.csvImportService.importarCsv(file);
+            return ResponseEntity.ok("CSV importado com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao importar o CSV: " + e.getMessage());
+        }
     }
 }
