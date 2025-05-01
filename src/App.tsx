@@ -187,90 +187,90 @@ const App: React.FC = () => {
 
       {/* Main Content */}
       <div className="p-6">
-        {currentPage === "menu" && (
-          <div className="flex flex-col items-center justify-center min-h-screen">
-            <h1 className="text-4xl font-bold mb-6 text-blue-500">Bem-vindo ao Projeto Matrículas</h1>
-            <div className="w-full max-w-8xl grid grid-cols-1 md:grid-cols-2 gap-8">
-              {rankingData && (
-                <div className="bg-white p-4 rounded shadow" style={{ height: "400px" }}>
-                  <h2 className="text-lg font-bold mb-4 text-center break-words">Ranking de Cursos 2022</h2>
-                  <Bar
-                    data={rankingData}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      layout: {
-                        padding: {
-                          bottom: 20,
+      {currentPage === "menu" && (
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-150px)]">
+          <h1 className="text-4xl font-bold mb-6 text-blue-500">Bem-vindo ao Projeto Matrículas</h1>
+          <div className="w-full max-w-8xl grid grid-cols-1 md:grid-cols-2 gap-8">
+            {rankingData && (
+              <div className="bg-white p-4 rounded shadow" style={{ height: "400px" }}>
+                <h2 className="text-lg font-bold mb-4 text-center break-words">Ranking de Cursos 2022</h2>
+                <Bar
+                  data={rankingData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                      padding: {
+                        bottom: 20,
+                      },
+                    },
+                    plugins: {
+                      legend: {
+                        display: true,
+                        position: "top",
+                      },
+                    },
+                    scales: {
+                      x: {
+                        ticks: {
+                          font: {
+                            size: 10,
+                          },
+                          callback: function (value, index, values) {
+                            const label = this.getLabelForValue(value as number);
+                            return label.split(" ").join("\n");
+                          },
                         },
                       },
-                      plugins: {
-                        legend: {
+                    },
+                  }}
+                />
+              </div>
+            )}
+            {totalAlunosData && (
+              <div className="bg-white p-4 rounded shadow" style={{ height: "400px" }}>
+                <h2 className="text-lg font-bold mb-4 text-center break-words">Total de Alunos por Ano</h2>
+                <Line
+                  data={totalAlunosData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        display: true,
+                        position: "top",
+                      },
+                    },
+                    scales: {
+                      x: {
+                        title: {
                           display: true,
-                          position: "top",
+                          text: "Ano",
                         },
                       },
-                      scales: {
-                        x: {
-                          ticks: {
-                            font: {
-                              size: 10,
-                            },
-                            callback: function (value, index, values) {
-                              const label = this.getLabelForValue(value as number);
-                              return label.split(" ").join("\n");
-                            },
-                          },
-                        },
-                      },
-                    }}
-                  />
-                </div>
-              )}
-              {totalAlunosData && (
-                <div className="bg-white p-4 rounded shadow" style={{ height: "400px" }}>
-                  <h2 className="text-lg font-bold mb-4 text-center break-words">Total de Alunos por Ano</h2>
-                  <Line
-                    data={totalAlunosData}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: {
+                      y: {
+                        title: {
                           display: true,
-                          position: "top",
+                          text: "Total de Alunos",
                         },
                       },
-                      scales: {
-                        x: {
-                          title: {
-                            display: true,
-                            text: "Ano",
-                          },
-                        },
-                        y: {
-                          title: {
-                            display: true,
-                            text: "Total de Alunos",
-                          },
-                        },
+                    },
+                    elements: {
+                      line: {
+                        tension: 0.3, // Add smooth curves to the line
                       },
-                      elements: {
-                        line: {
-                          tension: 0.3, // Add smooth curves to the line
-                        },
-                        point: {
-                          radius: 5, // Size of the points
-                          backgroundColor: "rgba(255, 99, 132, 1)", // Color of the points
-                        },
+                      point: {
+                        radius: 5, // Size of the points
+                        backgroundColor: "rgba(255, 99, 132, 1)", // Color of the points
                       },
-                    }}
-                  />
-                </div>
-              )}
-            </div>
+                    },
+                  }}
+                />
+              </div>
+            )}
           </div>
-        )}
+        </div>
+      )}
         {currentPage === "ranking" && <RankingCursosPage />}
         {currentPage === "totalAlunos" && <TotalAlunosPorAnoPage />}
         {currentPage === "importCsv" && <ImportCsvPage />}
