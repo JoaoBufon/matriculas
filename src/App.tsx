@@ -115,25 +115,26 @@ const App: React.FC = () => {
     <div className="relative min-h-screen bg-gray-100">
       {/* Header */}
       <header className="bg-blue-500 text-white p-4 flex items-center justify-between sticky top-0 z-50">
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="text-white focus:outline-none"
-        >
-          {/* 3 stripes button */}
-          <div className="space-y-1">
-            <div className="w-6 h-1 bg-white"></div>
-            <div className="w-6 h-1 bg-white"></div>
-            <div className="w-6 h-1 bg-white"></div>
-          </div>
-        </button>
-        <button
-          onClick={() => setCurrentPage("menu")}
-          className="text-xl font-bold text-center flex-grow focus:outline-none"
-        >
-          Projeto Matrículas
-        </button>
-      </header>
-
+  <button
+    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+    className="text-white focus:outline-none"
+  >
+    {/* 3 stripes button */}
+    <div className="space-y-1">
+      <div className="w-6 h-1 bg-white"></div>
+      <div className="w-6 h-1 bg-white"></div>
+      <div className="w-6 h-1 bg-white"></div>
+    </div>
+  </button>
+  <div className="flex-grow text-center">
+    <button
+      onClick={() => setCurrentPage("menu")}
+      className="text-xl font-bold focus:outline-none"
+    >
+      Projeto Matrículas
+    </button>
+  </div>
+</header>
       {/* Sidebar */}
       <div
         ref={sidebarRef}
@@ -145,12 +146,6 @@ const App: React.FC = () => {
         <div className="p-4 pt-16">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold text-gray-800">Menu</h2>
-            <button
-              onClick={() => setIsSidebarOpen(false)}
-              className="text-gray-500 hover:text-gray-700 focus:outline-none"
-            >
-              ✕
-            </button>
           </div>
           <ul className="space-y-4">
             <li>
@@ -279,7 +274,7 @@ const App: React.FC = () => {
         {currentPage === "ranking" && <RankingCursosPage />}
         {currentPage === "totalAlunos" && <TotalAlunosPorAnoPage />}
         {currentPage === "importCsv" && <ImportCsvPage />}
-      </div>
+x      </div>
     </div>
   );
 };
