@@ -74,9 +74,9 @@ const AutocompleteCurso: React.FC<AutocompleteCursoProps> = ({ onSelect }) => {
       />
       {showDropdown && filteredCursos.length > 0 && (
         <ul className="absolute z-10 bg-white border border-gray-300 rounded shadow w-full max-h-60 overflow-y-auto">
-          {filteredCursos.map((curso) => (
+          {filteredCursos.map((curso, index) => (
             <li
-              key={curso.idCurso}
+              key={curso.idCurso || `${curso.desCurso}-${index}`} // Ensure a unique key
               onClick={() => handleSelect(curso)}
               className="p-3 hover:bg-gray-100 cursor-pointer"
             >

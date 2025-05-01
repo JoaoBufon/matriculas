@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { buscarTotalAlunosPorAno } from "../services/consultasService";
-import { TotalAlunosPorAno } from "../types/consultas/TotalAlunosPorAno";
-import { estadosBrasil } from "../constants/estadosBrasil";
-import AutocompleteCurso from "./AutocompleteCurso";
+import { buscarTotalAlunosPorAno } from "../../services/consultasService";
+import { TotalAlunosPorAno } from "../../types/consultas/TotalAlunosPorAno";
+import { estadosBrasil } from "../../constants/estadosBrasil";
+import AutocompleteCurso from "../AutocompleteCurso";
 
 const TotalAlunosPorAnoPage = () => {
   const [dados, setDados] = useState<TotalAlunosPorAno[]>([]);

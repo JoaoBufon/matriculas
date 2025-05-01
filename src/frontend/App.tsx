@@ -11,9 +11,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import RankingCursosPage from "./components/RankingCursosPage";
-import TotalAlunosPorAnoPage from "./components/TotalAlunosPorAnoPage";
-import ImportCsvPage from "./components/ImportCsvPage";
+import RankingCursosPage from "./components/pages/RankingCursosPage";
+import TotalAlunosPorAnoPage from "./components/pages/TotalAlunosPorAnoPage";
+import ImportCsvPage from "./components/pages/ImportCsvPage";
 import { buscarRankingCursos, buscarTotalAlunosPorAno } from "./services/consultasService";
 
 // Register Chart.js components

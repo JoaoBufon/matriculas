@@ -10,7 +10,6 @@ export const buscarTotalAlunosPorAno = async (
 ): Promise<TotalAlunosPorAno[]> => {
   let endpoint = `/pesquisas/totalAlunos/${ano}`;
 
-  console.log(modalidade, estado, curso);
   if (!modalidade && (estado || curso)) {
     modalidade = "ALL";
   }

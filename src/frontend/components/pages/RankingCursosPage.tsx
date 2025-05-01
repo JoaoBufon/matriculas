@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { buscarRankingCursos } from "../services/consultasService";
-import { RankingCurso } from "../types/consultas/RankingCurso";
-import { estadosBrasil } from "../constants/estadosBrasil";
+import { buscarRankingCursos } from "../../services/consultasService";
+import { RankingCurso } from "../../types/consultas/RankingCurso";
+import { estadosBrasil } from "../../constants/estadosBrasil";
 
 const RankingCursosPage = () => {
   const [ranking, setRanking] = useState<RankingCurso[]>([]);
