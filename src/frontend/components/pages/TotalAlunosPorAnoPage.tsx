@@ -3,6 +3,7 @@ import { buscarTotalAlunosPorAno } from "../../services/consultasService";
 import { TotalAlunosPorAno } from "../../types/consultas/TotalAlunosPorAno";
 import { estadosBrasil } from "../../constants/estadosBrasil";
 import AutocompleteCurso from "../AutocompleteCurso";
+import { formatNumber } from "../../utils/numberUtils";
 
 const TotalAlunosPorAnoPage = () => {
   const [dados, setDados] = useState<TotalAlunosPorAno[]>([]);
@@ -60,7 +61,6 @@ const TotalAlunosPorAnoPage = () => {
           onChange={(e) => setEstado(e.target.value)}
           className="border p-3 rounded w-full md:w-1/3 bg-white shadow"
         >
-          <option value="">Todos Estados</option>
           {estadosBrasil.map((estado) => (
             <option key={estado.value} value={estado.value}>
               {estado.label}
@@ -96,7 +96,7 @@ const TotalAlunosPorAnoPage = () => {
                     className="border-b hover:bg-gray-100 transition"
                   >
                     <td className="py-3 px-6">{item.numAno}</td>
-                    <td className="py-3 px-6">{item.nmrTotalAlunos}</td>
+                    <td className="py-3 px-6">{formatNumber(item.nmrTotalAlunos)}</td>
                   </tr>
                 ))
               ) : (

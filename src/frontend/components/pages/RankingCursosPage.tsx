@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { buscarRankingCursos } from "../../services/consultasService";
 import { RankingCurso } from "../../types/consultas/RankingCurso";
 import { estadosBrasil } from "../../constants/estadosBrasil";
+import { formatNumber } from "../../utils/numberUtils"; // Import the utility function
 
 const RankingCursosPage = () => {
   const [ranking, setRanking] = useState<RankingCurso[]>([]);
@@ -87,7 +88,7 @@ const RankingCursosPage = () => {
                     className="border-b hover:bg-gray-100 transition"
                   >
                     <td className="py-3 px-6">{curso.desCurso}</td>
-                    <td className="py-3 px-6">{curso.nmrMatriculados}</td>
+                    <td className="py-3 px-6">{formatNumber(curso.nmrMatriculados)}</td>
                   </tr>
                 ))
               ) : (
