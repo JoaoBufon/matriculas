@@ -2,6 +2,12 @@ import api from "./api";
 import { TotalAlunosPorAno } from "../types/consultas/TotalAlunosPorAno";
 import { RankingCurso } from "../types/consultas/RankingCurso";
 
+const saveToLocalStorage = (key: string, data: any) => {
+  const existingData = JSON.parse(localStorage.getItem(key) || "[]");
+  const updatedData = [data, ...existingData].slice(0, 2); // Keep only the last 2 queries
+  localStorage.setItem(key, JSON.stringify(updatedData));
+};
+
 export const buscarTotalAlunosPorAno = async (
   ano: number,
   modalidade?: string,
@@ -20,7 +26,7 @@ export const buscarTotalAlunosPorAno = async (
 
   if (modalidade && curso && estado) {
     endpoint += `/${modalidade}/${estado}/${curso}`;
-  }else if (modalidade && estado) {
+  } else if (modalidade && estado) {
     endpoint += `/${modalidade}/${estado}`;
   } else if (modalidade) {
     endpoint += `/${modalidade}`;
@@ -31,7 +37,12 @@ export const buscarTotalAlunosPorAno = async (
   }
 
   const response = await api.get(endpoint);
-  return response.data;
+  const data = response.data;
+
+  // Save the result to localStorage
+  saveToLocalStorage("lastTotalAlunosQueries", { ano, modalidade, estado, curso, data });
+
+  return data;
 };
 
 export const buscarRankingCursos = async (
@@ -54,5 +65,10 @@ export const buscarRankingCursos = async (
   }
 
   const response = await api.get(endpoint);
-  return response.data;
+  const data = response.data;
+
+  // Save the result to localStorage
+  saveToLocalStorage("lastRankingCursosQueries", { ano, modalidade, estado, data });
+
+  return data;
 };

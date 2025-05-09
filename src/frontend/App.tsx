@@ -15,6 +15,7 @@ import RankingCursosPage from "./components/pages/RankingCursosPage";
 import TotalAlunosPorAnoPage from "./components/pages/TotalAlunosPorAnoPage";
 import ImportCsvPage from "./components/pages/ImportCsvPage";
 import { buscarRankingCursos, buscarTotalAlunosPorAno } from "./services/consultasService";
+import LastQueriesPage from "./components/pages/LastQueriesPage";
 
 // Register Chart.js components
 ChartJS.register(
@@ -29,7 +30,7 @@ ChartJS.register(
 );
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<"menu" | "ranking" | "totalAlunos" | "importCsv">("menu");
+  const [currentPage, setCurrentPage] = useState<"menu" | "ranking" | "totalAlunos" | "importCsv" | "lastQueries">("menu");
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -181,6 +182,17 @@ const App: React.FC = () => {
                 Importar CSV
               </button>
             </li>
+            <li>
+              <button
+                onClick={() => {
+                  setCurrentPage("lastQueries");
+                  setIsSidebarOpen(false);
+                }}
+                className="text-blue-600 hover:text-blue-800 font-medium text-lg transition-colors duration-200"
+              >
+                Últimas Consultas
+              </button>
+            </li>
           </ul>
         </div>
       </div>
@@ -274,6 +286,7 @@ const App: React.FC = () => {
         {currentPage === "ranking" && <RankingCursosPage />}
         {currentPage === "totalAlunos" && <TotalAlunosPorAnoPage />}
         {currentPage === "importCsv" && <ImportCsvPage />}
+        {currentPage === "lastQueries" && <LastQueriesPage />}
       </div>
     </div>
   );
